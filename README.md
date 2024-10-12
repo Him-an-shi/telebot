@@ -1,17 +1,16 @@
 import telebot
 from telebot import types
 
-# Replace with your bot's token
 API_TOKEN = '7560965137:AAH2nBfNwfgxfi0ItjcL7Lwy9vhqcEstMGY'
 bot = telebot.TeleBot(API_TOKEN)
 
-# Updated club data
 clubs = {
     'Technical': ['Trinity 🛠️', 'Technical Board 🔧'],
     'Non-Technical': ['Cultural Board 🎨', 'DDQ 🎭']
 }
 
-# Contact information (No images for now)
+
+# Contact information 
 club_info = {
     'Trinity 🛠️': {
         'Faculty': {
@@ -132,18 +131,17 @@ club_info = {
     }
 }
 
-# Start command
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
 
-    # Add emoji for a visually pleasing effect
+    # Added emojiis for a visually pleasing effect
     markup.add('🛠️ Technical', '🎨 Non-Technical')
 
-    msg = bot.reply_to(message, "👋 Welcome! Please choose the type of club you're interested in:", reply_markup=markup)
+    msg = bot.reply_to(message, "👋 Welcome! Please choose the club you're interested in:", reply_markup=markup)
     bot.register_next_step_handler(msg, process_club_type)
 
-# Handle club type selection
+# club selection
 def process_club_type(message):
     club_type = message.text.replace('🛠️ ', '').replace('🎨 ', '')
 
@@ -159,7 +157,7 @@ def process_club_type(message):
     msg = bot.reply_to(message, f"📋 Select a club from {club_type} clubs:", reply_markup=markup)
     bot.register_next_step_handler(msg, process_club_name)
 
-# Handle club name selection
+# name selection
 def process_club_name(message):
     club_name = message.text
 
@@ -178,7 +176,7 @@ def process_club_options(message, club_name):
     valid_options = ['👩‍🏫 Faculty in-charge', '🎓 BE mentors', '📋 Club secretaries', '🤝 Club joint secretaries']
 
     if option not in valid_options:
-        bot.reply_to(message, "❌ Invalid option. Please choose a valid one.")
+        bot.reply_to(message, "❌ Invalid option. Please choose a valid option.")
         return
 
     if option == '👩‍🏫 Faculty in-charge':
@@ -190,7 +188,7 @@ def process_club_options(message, club_name):
     elif option == '📋 Club secretaries':
         for secretary in club_info[club_name]['Secretary']['Names']:
             send_person_info(message, {'Name': secretary[0], 'Contact': secretary[1]})
-    else:  # 🤝 Club joint secretaries
+    else:  
         for joint_secretary in club_info[club_name]['Joint Secretary']['Names']:
             send_person_info(message, {'Name': joint_secretary[0], 'Contact': joint_secretary[1]})
 
@@ -204,12 +202,11 @@ def process_club_options(message, club_name):
 def send_person_info(message, person_info):
     bot.send_message(message.chat.id, f"📞 {person_info['Name']}: {person_info['Contact']}")
 
-# Handle end of session
 def process_end(message):
     if message.text == '✅ Yes':
         start(message)
     else:
-        bot.reply_to(message, "👋 Thank you for using the club bot. Do visit again!")
+        bot.reply_to(message, "👋 Thank you for using the club bot. Do visit again! ")
 
 # Polling
 bot.infinity_polling()
